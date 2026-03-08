@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tank Artillery Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #1a1a2e; font-family: 'Segoe UI', system-ui, sans-serif; }
+        canvas { display: block; }
+        #setup-screen {
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            z-index: 10;
+        }
+        #setup-screen h1 { margin-bottom: 2rem; font-size: 2rem; }
+        #setup-screen label { display: block; margin: 1rem 0 0.3rem; }
+        #setup-screen select, #setup-screen button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #2a2a4a;
+            color: #eee;
+        }
+        #setup-screen button {
+            margin-top: 1.5rem;
+            cursor: pointer;
+            background: #3498db;
+            border-color: #2980b9;
+        }
+        #setup-screen button:hover { background: #2980b9; }
+        #setup-screen.hidden { display: none; }
+        #hud {
+            position: fixed; top: 0; left: 0; right: 0;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            font-size: 0.95rem;
+            display: flex; gap: 2rem; align-items: center;
+            z-index: 5;
+        }
+        #hud.hidden { display: none; }
+        #round-end, #match-end {
+            position: fixed; inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            z-index: 10;
+        }
+        #round-end.visible, #match-end.visible { display: flex; }
+        #round-end h2, #match-end h2 { margin-bottom: 1rem; }
+        #round-end button, #match-end button {
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            background: #3498db;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="setup-screen">
+        <h1>Tank Artillery</h1>
+        <label for="num-tanks">Number of tanks</label>
+        <select id="num-tanks">
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <label for="difficulty">AI difficulty</label>
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <button id="start-btn">Start Game</button>
+    </div>
+    <div id="hud" class="hidden">
+        <span id="hud-turn">Turn: Player</span>
+        <span id="hud-angle">Angle: 45°</span>
+        <span id="hud-power">Power: 25</span>
+        <span id="hud-health">Health: 100</span>
+        <span id="hud-round">Round 1</span>
+    </div>
+    <div id="round-end">
+        <h2 id="round-winner-text">Round Over</h2>
+        <button id="next-round-btn">Next Round</button>
+    </div>
+    <div id="match-end">
+        <h2 id="match-winner-text">Match Over</h2>
+        <button id="play-again-btn">Play Again</button>
+    </div>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+        }
+    }
+    </script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

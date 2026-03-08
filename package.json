@@ -1,0 +1,9 @@
+{
+  "name": "tank-artillery-game",
+  "version": "0.1.0",
+  "description": "2D turn-based artillery tank game",
+  "scripts": {
+    "start": "npx serve -l 3000",
+    "dev": "npx serve -l 3000"
+  }
+}
