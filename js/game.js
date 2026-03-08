@@ -8,7 +8,7 @@ import { TerrainSystem } from './terrain.js';
 import { Tank, spawnTanks, TANK_HEIGHT, TURRET_LENGTH } from './tank.js';
 import { Projectile, anglePowerToVelocity } from './projectile.js';
 import { TurnManager } from './turnManager.js';
-import { selectTarget, computeAim } from './ai.js';
+import { selectTarget, computeAim, clampToValidAngle } from './ai.js';
 import {
     triggerExplosion,
     createExplosionEffect,
@@ -29,7 +29,7 @@ const POWER_MAX = 50;
 
 export class Game {
     constructor(config = {}) {
-        this.numTanks = Math.max(2, Math.min(5, config.numTanks ?? 3));
+        this.numTanks = Math.max(2, Math.min(10, config.numTanks ?? 3));
         this.difficulty = config.difficulty ?? 'medium';
         this.roundsToWin = config.roundsToWin ?? 2;
 
@@ -73,6 +73,7 @@ export class Game {
 
         this.tanks = spawnTanks(this.terrain, this.numTanks);
         this.tanks.forEach(t => {
+            if (t.isPlayer) t.angle = clampToValidAngle(t, this.terrain, t.angle);
             t.createMesh();
             this.scene.add(t.getMesh());
         });

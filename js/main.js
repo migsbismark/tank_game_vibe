@@ -5,14 +5,13 @@
 
 import * as THREE from 'three';
 import { Game } from './game.js';
+import { clampToValidAngle } from './ai.js';
 
 const VIEW_WIDTH = 80;
 const VIEW_HEIGHT = 48;
 const TERRAIN_BASE = -2; // bottom of terrain shape (minHeight - 2)
 const ANGLE_STEP = 3;
 const POWER_STEP = 2;
-const ANGLE_MIN = -90;
-const ANGLE_MAX = 90;
 const POWER_MIN = 5;
 const POWER_MAX = 50;
 
@@ -103,11 +102,15 @@ function onKeyDown(e) {
 
     if (e.key === 'ArrowUp') {
         e.preventDefault();
-        tank.angle = Math.min(ANGLE_MAX, tank.angle + ANGLE_STEP);
+        let a = tank.angle + ANGLE_STEP;
+        if (a >= 360) a -= 360;
+        tank.angle = clampToValidAngle(tank, game.terrain, a);
         tank.updateMesh(game.terrain);
     } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        tank.angle = Math.max(ANGLE_MIN, tank.angle - ANGLE_STEP);
+        let a = tank.angle - ANGLE_STEP;
+        if (a < 0) a += 360;
+        tank.angle = clampToValidAngle(tank, game.terrain, a);
         tank.updateMesh(game.terrain);
     } else if (e.key === 'ArrowRight') {
         e.preventDefault();

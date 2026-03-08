@@ -37,7 +37,7 @@ function isValidAngle(tank, terrain, angleDeg) {
  * @param {number} desiredDeg - desired angle 0-360
  * @returns {number}
  */
-function clampToValidAngle(tank, terrain, desiredDeg) {
+export function clampToValidAngle(tank, terrain, desiredDeg) {
     if (isValidAngle(tank, terrain, desiredDeg)) return desiredDeg;
     for (let delta = ANGLE_STEP; delta < 180; delta += ANGLE_STEP) {
         const a1 = (desiredDeg + delta) % 360;

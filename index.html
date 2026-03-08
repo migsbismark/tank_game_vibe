@@ -65,9 +65,22 @@
             border-radius: 6px;
             color: #fff;
         }
+        #watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 0.2em;
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
+    <div id="watermark">migsbismark</div>
     <div id="setup-screen">
         <h1>Tank Artillery</h1>
         <label for="num-tanks">Number of tanks</label>
@@ -76,6 +89,11 @@
             <option value="3" selected>3</option>
             <option value="4">4</option>
             <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
         </select>
         <label for="difficulty">AI difficulty</label>
         <select id="difficulty">

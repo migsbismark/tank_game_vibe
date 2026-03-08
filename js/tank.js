@@ -173,7 +173,11 @@ export function spawnTanks(terrain, count, minSpacing = 4) {
         }
     }
 
-    positions.sort((a, b) => a - b);
+    // Shuffle positions so player and AI tanks spawn in random order
+    for (let i = positions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [positions[i], positions[j]] = [positions[j], positions[i]];
+    }
 
     for (let i = 0; i < positions.length; i++) {
         const x = positions[i];
