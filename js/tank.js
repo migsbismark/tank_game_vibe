@@ -13,6 +13,7 @@ const POWER_MAX = 50;
 export const TANK_WIDTH = 0.8;
 const HEALTH_BAR_WIDTH = 1;
 const HEALTH_BAR_HEIGHT = 0.12;
+const AI_COLORS = [0xe74c3c, 0xf39c12, 0x27ae60, 0x9b59b6, 0x1abc9c, 0xe67e22, 0x3498db, 0x2ecc71, 0x8e44ad]; // red, orange, green, purple, teal, etc.
 export const TANK_HEIGHT = 0.5;
 export const TURRET_LENGTH = 0.45;
 export const TURRET_THICKNESS = 0.08;
@@ -46,18 +47,17 @@ export class Tank {
 
     /** Create Three.js mesh (box body + turret barrel). */
     createMesh() {
+        const bodyColor = this.isPlayer ? 0x3498db : AI_COLORS[this.index % AI_COLORS.length];
+        const turretColor = this.isPlayer ? 0x2980b9 : bodyColor;
+
         const bodyGeo = new THREE.BoxGeometry(TANK_WIDTH, TANK_HEIGHT, 0.4);
-        const bodyMat = new THREE.MeshBasicMaterial({
-            color: this.isPlayer ? 0x3498db : 0x95a5a6
-        });
+        const bodyMat = new THREE.MeshBasicMaterial({ color: bodyColor });
         const body = new THREE.Mesh(bodyGeo, bodyMat);
         body.position.y = TANK_HEIGHT / 2;
 
         // Turret barrel: long in X (points right by default), pivots at base
         const turretGeo = new THREE.BoxGeometry(TURRET_LENGTH, TURRET_THICKNESS, TURRET_THICKNESS);
-        const turretMat = new THREE.MeshBasicMaterial({
-            color: this.isPlayer ? 0x2980b9 : 0x7f8c8d
-        });
+        const turretMat = new THREE.MeshBasicMaterial({ color: turretColor });
         const turretBarrel = new THREE.Mesh(turretGeo, turretMat);
         turretBarrel.position.x = TURRET_LENGTH / 2; // offset so barrel base is at pivot
 

@@ -131,6 +131,8 @@ export class Game {
             return;
         }
 
+        const prevX = this.projectile.position.x;
+        const prevY = this.projectile.position.y;
         this.projectile.update(dt);
         const px = this.projectile.position.x;
         const py = this.projectile.position.y;
@@ -141,11 +143,30 @@ export class Game {
         const distTraveled = Math.sqrt(distX * distX + distY * distY);
         const inGracePeriod = distTraveled < 4 || this.projectile.age < 0.25;
 
-        // Terrain collision
+        // Terrain collision: check segment from prev to curr (prevents tunneling through terrain)
         if (!inGracePeriod) {
-            const terrainY = this.terrain.getHeight(px);
-            if (py <= terrainY) {
-                this.onProjectileImpact(px, terrainY);
+            const dist = Math.sqrt((px - prevX) ** 2 + (py - prevY) ** 2);
+            const steps = Math.max(8, Math.ceil(dist * 2));
+            let impactX = px, impactY = this.terrain.getHeight(px);
+            let hit = false;
+            if (py <= impactY) {
+                hit = true;
+            } else {
+                for (let i = 1; i <= steps; i++) {
+                    const t = i / steps;
+                    const cx = prevX + t * (px - prevX);
+                    const cy = prevY + t * (py - prevY);
+                    const th = this.terrain.getHeight(cx);
+                    if (cy <= th) {
+                        hit = true;
+                        impactX = cx;
+                        impactY = th;
+                        break;
+                    }
+                }
+            }
+            if (hit) {
+                this.onProjectileImpact(impactX, impactY);
                 return;
             }
         }
@@ -185,14 +206,15 @@ export class Game {
         });
         this.explosionEffects.push(effect);
 
-        // Destroyed tanks: trigger destruction explosion only if not at impact (avoids double explosion on direct hit)
+        // Destroyed tanks: trigger destruction explosion only if outside impact radius (avoids double explosion)
         const impactX = x;
         const impactY = y;
+        const skipRadiusSq = EXPLOSION_RADIUS * EXPLOSION_RADIUS; // 9 - skip if within impact explosion
         this.tanks.filter(t => !t.alive).forEach(t => {
             const dx = t.position.x - impactX;
             const dy = (t.position.y + TANK_HEIGHT / 2) - impactY;
             const distSq = dx * dx + dy * dy;
-            const skipDestruction = distSq < 4; // within ~2 units of impact = direct hit, use impact explosion only
+            const skipDestruction = distSq < skipRadiusSq;
             if (!skipDestruction) {
                 applyExplosionDamage(this.tanks, t.position.x, t.position.y, DESTRUCTION_RADIUS, 60);
                 this.terrain.deformTerrain(t.position.x, DESTRUCTION_RADIUS, DESTRUCTION_POWER);
